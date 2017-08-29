@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/turnage/graw/reddit"
-
+	"net/http"
+	"log"
+	"os"
 )
 
 func main() {
@@ -22,15 +24,32 @@ func main() {
 
 	//subreddit has posts
 	//get the last 10 posts of this subreddit
-	for _, post := range harvest.Posts[:3] {
-		fmt.Printf("[%s] posted [%s], total posts %d:::: subreddit is [%s]\n",
+	/*
+	for _, post := range harvest.Posts[:10] {
+		fmt.Printf("[%s] posted [%s], total comments %d:::: subreddit is [%s]\n",
 			post.Author, post.Title, post.NumComments, post.Subreddit)
 	}
+	*/
+
+	//most recent post image
+	imageURL := harvest.Posts[0].Thumbnail
 
 
+	response, err := http.Get(imageURL) //get the image you just called
 
+	if err != nil {
+		log.Fatalln("Error retrieving image thumbnail", err)//try for second image
+	}
 
-	//mess := harvest.Messages[1]
-	//fmt.Printf("[%s] wrote:: [%s]", mess.Author, mess.Body)
+	defer response.Body.Close()
+
+	file, err := os.Create("pic/test.txt")
+
+	if err!= nil {
+		log.Fatalln("Error creating files", err)
+	}
+
+	file.Close()
+	fmt.Println("Created file!")
 
 }
