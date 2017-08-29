@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"log"
 	"os"
+	"io"
 )
 
 func main() {
@@ -32,7 +33,7 @@ func main() {
 	*/
 
 	//most recent post image
-	imageURL := harvest.Posts[0].Thumbnail
+	imageURL := harvest.Posts[0].URL
 
 
 	response, err := http.Get(imageURL) //get the image you just called
@@ -43,13 +44,16 @@ func main() {
 
 	defer response.Body.Close()
 
-	file, err := os.Create("pic/test.txt")
+	file, err := os.Create("pic/temp.jpg")
 
 	if err!= nil {
 		log.Fatalln("Error creating files", err)
 	}
-
-	file.Close()
+	defer file.Close()
 	fmt.Println("Created file!")
+	_, err = io.Copy(file, response.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
