@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"io"
+	"os/exec"
 )
 
 func main() {
@@ -55,5 +56,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	cmd := exec.Command("osascript", "-e", `tell application "Finder" to set desktop picture to POSIX
+	file "/Users/benjaminxerri/Documents/Go/src/GoRedditWallpaperChanger/pic/temp.jpg"`)
+	e  := cmd.Run()
+	if e != nil {
+		log.Fatalln("Error running command",e)
+	}
+
+	fmt.Println("Background set!")
+
+	//osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/Users/benjaminxerri/Documents/Go/src/GoRedditWallpaperChanger/pic/temp.jpg"'
+	//osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/Library/Desktop Pictures/Earth Horizon.jpg"'
 
 }
